@@ -7,7 +7,7 @@
     word-wrap: break-word;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     }
-.container-fluid {
+#container_1 {
     background-image: url("http://172.16.8.112/form/img/3.jpg");
     background-color:#ffffcc;
     word-wrap: break-word;
