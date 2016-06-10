@@ -1,2 +1,2 @@
-# mindfire_assignment
+# mindfire
 My Assignments
