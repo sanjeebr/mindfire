@@ -1,42 +1,45 @@
 <?php
-include_once("php/mysql_connect_db.php");
+require_once("config/mysql_connect_db.php");
 if (isset($_POST['submit'])) { 
 
-    $prefix = isset($_POST['prefix'])?$_POST['prefix'] :'';
-    $first_name = isset($_POST['first_name']) ? $_POST['first_name'] :'';
-    $middle_name = isset($_POST['middle_name']) ? $_POST['middle_name'] :'';
-    $last_name = isset($_POST['last_name']) ? $_POST['last_name'] :'';
+    $prefix = ($_POST['prefix']) ? $_POST['prefix'] : '';
+    $first_name = isset($_POST['first_name']) ? $_POST['first_name'] : '';
+    $middle_name = isset($_POST['middle_name']) ? $_POST['middle_name'] : '';
+    $last_name = isset($_POST['last_name']) ? $_POST['last_name'] : '';
     $gender = isset($_POST['gender']) ? $_POST['gender'] : '';
-    $date_of_birth = isset($_POST['date_of_birth']) ? $_POST['date_of_birth'] :'';
-    $marital = isset($_POST['marital']) ? $_POST['marital'] :'';
-    $r_street = isset($_POST['r_street']) ?$_POST['r_street'] :'';
-    $r_city = isset($_POST['r_city']) ? $_POST['r_city'] :'';
-    $r_state = isset($_POST['r_state']) ? $_POST['r_state'] :'';
-    $r_pin = isset($_POST['r_pin']) ? $_POST['r_pin'] :'';
-    $r_phone = isset($_POST['r_phone']) ? $_POST['r_phone'] :'';
+    $date_of_birth = isset($_POST['date_of_birth']) ? $_POST['date_of_birth'] : '';
+    $marital = isset($_POST['marital']) ? $_POST['marital'] : '';
+    $r_street = isset($_POST['r_street']) ?$_POST['r_street'] : '';
+    $r_city = isset($_POST['r_city']) ? $_POST['r_city'] : '';
+    $r_state = isset($_POST['r_state']) ? $_POST['r_state'] : '';
+    $r_pin = isset($_POST['r_pin']) ? $_POST['r_pin'] : '';
+    $r_phone = isset($_POST['r_phone']) ? $_POST['r_phone'] : '';
     $r_fax = isset($_POST['r_fax']) ? $_POST['r_fax'] : '';
-    $o_street = isset($_POST['o_street']) ? $_POST['o_street'] :'';
-    $o_city = isset($_POST['o_city']) ? $_POST['o_city'] :'';
-    $o_state = isset($_POST['o_state']) ? $_POST['o_state'] :'';
-    $o_pin = isset($_POST['o_pin']) ? $_POST['o_pin'] :'';
-    $o_phone = isset($_POST['o_phone']) ? $_POST['o_phone'] :'';
-    $o_fax = isset($_POST['o_fax']) ? $_POST['o_fax'] :'';
-    $employment = isset($_POST['employment']) ? $_POST['employment'] :'';
-    $employer = isset($_POST['employer']) ? $_POST['employer'] :'';
-    $note = isset($_POST['note']) ? $_POST['note']:'';
-    $communication = (isset($_POST['communication']) && !empty($_POST['communication']) )? implode(',',$_POST['communication']):'';
-    $photo = isset($_POST['photo'])?$_POST['photo']:'';
+    $o_street = isset($_POST['o_street']) ? $_POST['o_street'] : '';
+    $o_city = isset($_POST['o_city']) ? $_POST['o_city'] : '';
+    $o_state = isset($_POST['o_state']) ? $_POST['o_state'] : '';
+    $o_pin = isset($_POST['o_pin']) ? $_POST['o_pin'] : '';
+    $o_phone = isset($_POST['o_phone']) ? $_POST['o_phone'] : '';
+    $o_fax = isset($_POST['o_fax']) ? $_POST['o_fax'] : '';
+    $employment = isset($_POST['employment']) ? $_POST['employment'] : '';
+    $employer = isset($_POST['employer']) ? $_POST['employer'] : '';
+    $note = isset($_POST['note']) ? $_POST['note'] : '';
+    $communication = (isset($_POST['communication']) && !empty($_POST['communication']) )
+    ? implode(',',$_POST['communication']) : '';
+    $photo = isset($_POST['photo'])?$_POST['photo'] : '';
      
-    $sql_query="INSERT INTO employee(first_name, middle_name, last_name, date_of_birth, prefix, photo, note, gender, marital_status,communication, employment, employer) VALUES ('$first_name', '$middle_name', '$last_name', $date_of_birth, '$prefix', '$photo', '$note', '$gender','$marital','$communication', '$employment','$employer')";
-
-
+    $sql_query="INSERT INTO employee(first_name, middle_name, last_name, date_of_birth, prefix, 
+    photo, note, gender, marital_status,communication, employment, employer) 
+    VALUES ('$first_name', '$middle_name', '$last_name', $date_of_birth, '$prefix', '$photo',
+     '$note', '$gender','$marital','$communication', '$employment','$employer')";
     mysqli_query($conn,$sql_query);
-
-
-
     $employee_id = mysqli_insert_id($conn);
     
-    $sql_query="INSERT INTO `address`(`employee_id`, `type`, `phone`, `fax`, `street`, `pin_no`, `city`, `state`) VALUES ($employee_id,'residence','$r_phone','$r_fax','$r_street','$r_pin','$r_city','$r_state'),($employee_id,'office','$o_phone','$o_fax','$o_street','$o_pin','$o_city','$o_state')";
+     
+    $sql_query="INSERT INTO `address`(`employee_id`, `type`, `phone`, `fax`, `street`, `pin_no`,
+     `city`, `state`) VALUES ($employee_id,'residence','$r_phone','$r_fax','$r_street','$r_pin',
+     '$r_city','$r_state'),($employee_id,'office','$o_phone','$o_fax','$o_street','$o_pin','$o_city'
+     ,'$o_state')";
      
     mysqli_query($conn,$sql_query);
     header("Location: output.php");
@@ -164,7 +167,7 @@ if (isset($_POST['submit'])) {
                      <label for="r_state">State:</label>
                      <select  id="r_state" class="form-control" name="r_state">
                          <option value="">Select State</option>
-                         <option value="1">Andaman and Nicobar Islands</option>
+                         <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
                          <option value="Andhra Pradesh">Andhra Pradesh</option>
                          <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                          <option value="Assam">Assam</option>
@@ -219,12 +222,12 @@ if (isset($_POST['submit'])) {
                   <label for="o_state">State:</label>
                   <select  id="o_state" class="form-control" name="o_state">
                        <option value="">Select State</option>
-                       <option value="1">Andaman and Nicobar Islands</option>
-                       <option value="2">Andhra Pradesh</option>
-                       <option value="3">Arunachal Pradesh</option>
-                       <option value="4">Assam</option>
-                       <option value="5">Bihar</option>
-                       <option value="6">Chandigarh</option>
+                       <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                       <option value="Andhra Pradesh">Andhra Pradesh</option>
+                       <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                       <option value="Assam">Assam</option>
+                       <option value="Bihar">Bihar</option>
+                       <option value="Chandigarh">Chandigarh</option>
                        <option value="Chhattisgarh">Chhattisgarh</option>
                        <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
                        <option value="Daman and Diu">Daman and Diu</option>
