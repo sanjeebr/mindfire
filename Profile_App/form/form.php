@@ -1,3 +1,36 @@
+<?php
+include_once("php/mysql_connect_db.php");
+if (isset($_POST['submit'])) { 
+    $prefix = $_POST['prefix'];
+    $first_name = $_POST['first_name'];
+    $middle_name = $_POST['middle_name'];
+    $last_name = $_POST['last_name'];
+    $gender = $_POST['gender'];
+    $date_of_birth = $_POST['date_of_birth'];
+    $marital = $_POST['marital'];
+    $r_street = $_POST['r_street'];
+    $r_city = $_POST['r_city'];
+    $r_state = $_POST['r_state'];
+    $r_pin = $_POST['r_pin'];
+    $r_phone = $_POST['r_phone'];
+    $o_fax = $_POST['r_fax'];
+    $o_street = $_POST['o_street'];
+    $o_city = $_POST['o_city'];
+    $o_state = $_POST['o_state'];
+    $o_pin = $_POST['o_pin'];
+    $o_phone = $_POST['o_phone'];
+    $o_fax = $_POST['o_fax'];
+    $employment = $_POST['employment'];
+    $employer = $_POST['employer'];
+    $note = $_POST['note'];
+    $communication = $_POST['communication'];
+
+}
+?>
+
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +45,7 @@
         <div class="container">
             <h1>Registration Form</h1>
             <br>
-        <form role="form" id="empform" method="post" action="output.php">
+        <form role="form" id="empform" method="post" action="">
         <div class="well"><h3>Personal Info:</h3>
             <div class="row">
                 <div class="col-lg-3 col-md-3">
@@ -253,7 +286,7 @@
       </div>
       <div class="row form-group text-center">
                 <button class="btn btn-danger btn-lg" type="reset" >Reset</button>&nbsp;&nbsp;&nbsp;
-                <button type="submit" class="btn btn-warning btn-lg">Submit</button>
+                <button type="submit" class="btn btn-warning btn-lg" name="submit">Submit</button>
       </div>
       </form>
     </div> 
