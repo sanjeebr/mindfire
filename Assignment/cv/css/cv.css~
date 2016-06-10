@@ -1,0 +1,44 @@
+.container {
+    background: -webkit-linear-gradient(#ffffff,#66ffff); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#ffffff, #66ffff); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#ffffff, #66ffff); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#ffffff, #66ffff); /* Standard syntax */
+    background-color:#66ffff;
+    word-wrap: break-word;
+    border: 0.5em solid #1ac6ff;
+}
+#head_name {
+    color:#00394d;
+    
+    font-family: "Times New Roman";
+    font-size: 3.75em;
+}
+.head{
+  color:#00394d;
+    font-family: "Times New Roman";
+    font-size: 2em;
+}
+.left_head{
+  color:#0099cc;
+    text-decoration: underline;
+    font-family: "Times New Roman";
+    font-size: 1.75em;
+}
+.right_head{
+  color:#0099cc;
+    text-decoration: underline;
+    font-family: "Times New Roman";
+    font-size: 2em;
+}
+.right_char{
+  font-family: "Times New Roman";
+    font-size: 1.375em;
+}
+.left_char{
+  font-family: "Times New Roman";
+    font-size: 1.125em;
+}
+table {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
