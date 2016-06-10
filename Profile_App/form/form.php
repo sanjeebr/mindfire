@@ -27,7 +27,7 @@ if (isset($_POST['submit'])) {
     $communication = (isset($_POST['communication']) && !empty($_POST['communication']) )? implode(',',$_POST['communication']):'';
     $photo = isset($_POST['photo'])?$_POST['photo']:'';
      
-    $sql_query="INSERT INTO employee(first_name, middle_name, last_name, date_of_birth, prefix, photo, note, gender, marital_status,communication_id, employment, employer) VALUES ('$first_name', '$middle_name', '$last_name', $date_of_birth, '$prefix', '$photo', '$note', '$gender','$marital','$communication', '$employment','$employer')";
+    $sql_query="INSERT INTO employee(first_name, middle_name, last_name, date_of_birth, prefix, photo, note, gender, marital_status,communication, employment, employer) VALUES ('$first_name', '$middle_name', '$last_name', $date_of_birth, '$prefix', '$photo', '$note', '$gender','$marital','$communication', '$employment','$employer')";
 
 
     mysqli_query($conn,$sql_query);
@@ -36,7 +36,7 @@ if (isset($_POST['submit'])) {
 
     $employee_id = mysqli_insert_id($conn);
     
-    $sql_query="INSERT INTO `address`(`employee_id`, `type`, `phone`, `fax`, `street`, `pin_no`, `city`, `state_id`) VALUES ($employee_id,'residence','$r_phone','$r_fax','$r_street','$r_pin','$r_city',$r_state),($employee_id,'office','$o_phone','$o_fax','$o_street','$o_pin','$o_city',$o_state)";
+    $sql_query="INSERT INTO `address`(`employee_id`, `type`, `phone`, `fax`, `street`, `pin_no`, `city`, `state`) VALUES ($employee_id,'residence','$r_phone','$r_fax','$r_street','$r_pin','$r_city','$r_state'),($employee_id,'office','$o_phone','$o_fax','$o_street','$o_pin','$o_city','$o_state')";
      
     mysqli_query($conn,$sql_query);
     header("Location: output.php");
