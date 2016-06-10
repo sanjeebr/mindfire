@@ -16,9 +16,28 @@ $sql_query="SELECT  employee.id as emp_id,employee.first_name as first_name, emp
     <link rel="stylesheet" href="css/output.css"  />
 </head>
 <body>
+<div class="container-fluid" id="container_1">
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="#">Sanjeeb</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="form.php">Registration</a></li>
+        <li class="active"><a href="#">Employee Details</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
     <div class="container-fluid">
   <h2>Employee Details</h2>           
-  <table class="table table-striped">
+  <table class="table table-striped success">
     <thead>
       <tr>
         <th>Emp ID</th>
@@ -52,6 +71,7 @@ $sql_query="SELECT  employee.id as emp_id,employee.first_name as first_name, emp
      <?php   } ?>
     </tbody>
   </table>
+</div>
 </div> 
 </body>
 </html>
