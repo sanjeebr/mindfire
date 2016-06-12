@@ -78,8 +78,8 @@ $sql_query="SELECT  employee.id as emp_id,employee.first_name as first_name, emp
         <td><?php echo $row['employer']; ?></td>
         <td><?php echo $row['note']; ?></td>
         <td><?php echo $row['communication']; ?></td>
-        <td><a><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a></td>
-        <td><a onclick="return confirm('The row will be deleted')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></td>
+        <td><a ><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a></td>
+        <td><a onclick="return confirm('The row will be deleted')" href="delete.php?emp_id=<?php echo $row['emp_id']?>"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></td>
       </tr>
      <?php   } ?>
     </tbody>

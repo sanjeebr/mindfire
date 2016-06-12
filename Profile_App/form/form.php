@@ -2,7 +2,7 @@
 require_once("config/mysql_connect_db.php");
 if (isset($_POST['submit'])) { 
 
-    $prefix = ($_POST['prefix']) ? $_POST['prefix'] : '';
+    $prefix = isset($_POST['prefix']) ? $_POST['prefix'] : '';
     $first_name = isset($_POST['first_name']) ? $_POST['first_name'] : '';
     $middle_name = isset($_POST['middle_name']) ? $_POST['middle_name'] : '';
     $last_name = isset($_POST['last_name']) ? $_POST['last_name'] : '';
