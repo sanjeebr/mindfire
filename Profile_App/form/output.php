@@ -30,6 +30,8 @@ employee.middle_name as middle_name, employee.last_name as last_name,
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/form.css"  />
     <link rel="stylesheet" href="css/output.css"  />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="container-fluid" id="container_1">
@@ -72,13 +74,13 @@ employee.middle_name as middle_name, employee.last_name as last_name,
     <?php while($row=mysqli_fetch_assoc($result)){ ?>
       <tr>
         <td><?php echo $row['emp_id']; ?></td>
-        <td><img src="img/3.jpg" class="img-rounded" alt="Cinque Terre" width="160" height="160"></td>
+        <td><img src="profile_pic/<?php echo $row['photo'];?>" class="img-rounded" alt="profile_pic" width="160" height="160"></td>
         <td><?php echo 'Name:'.$row['prefix'].' '.$row['first_name'].' '.$row['middle_name'].' '.$row['last_name'].'<br>Gender:'.$row['gender'].'<br>DOB:'.date('d-M-Y',strtotime($row['date_of_birth'])).'<br>Marital Status:'. $row['marital']; ?></td>
         <td><?php echo 'Street:'.$row['r_street'].'<br>City:'.$row['r_city'].'<br>State:'.$row['r_state'].'<br>'.'Pin no:'.$row['r_pin'].'<br>'.'Phone no:'.$row['r_phone'].'<br>'.'Fax no:'.$row['r_fax']; ?></td>
         <td><?php echo 'Street:'.$row['o_street'].'<br>City:'.$row['o_city'].'<br>State:'.$row['o_state'].'<br>'.'Pin no:'.$row['o_pin'].'<br>'.'Phone no:'.$row['o_phone'].'<br>'.'Fax no:'.$row['o_fax']; ?></td>
         <td><?php echo 'Employment:'.$row['employment'].'<br>Employer:'.$row['employer'].'<br>Note:'.$row['note'].'<br>Communication:'.$row['communication']; ?></td>
         <td><a href="form.php?emp_id=<?php echo $row['emp_id']?>"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a></td>
-        <td><a onclick="return confirm('The row will be deleted')" href="delete.php?emp_id=<?php echo $row['emp_id']?>"><span class="glyphicon glyphicon-remove error" aria-hidden="true"></span></a></td>
+        <td><a onclick="return confirm('The row will be deleted')" href="delete.php?emp_id=<?php echo $row['emp_id'].'&photo='.$row['photo']?>"><span class="glyphicon glyphicon-remove error" aria-hidden="true"></span></a></td>
       </tr>
      <?php   } ?>
     </tbody>
