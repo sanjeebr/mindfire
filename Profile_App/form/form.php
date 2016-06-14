@@ -13,11 +13,11 @@ function test_input($input) {
 
  $prefix = $first_name = $middle_name = $last_name = $gender = $date_of_birth = $marital = 
     $r_street = $r_city = $r_state = $r_pin = $r_phone = $r_fax = $o_street = $o_city = $o_state =
-     $o_pin = $o_phone = $o_fax = $employment = $employer = $note = $communication = $photo = '';
+     $o_pin = $o_phone = $o_fax = $employment = $employer = $note = $communication = $photo ='';
 
 
      $first_name_err = $middle_name_err = $last_name_err = $dob_err = $r_street_err = $r_city_err = 
-        $r_state_err = $gender_err = $marital_err =  $photo_err = '';
+        $r_state_err = $gender_err = $marital_err = $r_phone_err = $r_fax_err = $r_pin_err = $o_phone_err = $o_pin_err = $o_fax_err = $photo_err = '';
 
 
 if (isset($_GET['emp_id'])) {
@@ -95,11 +95,6 @@ if (isset($_POST['submit'])||isset($_POST['update'])) {
     $note = isset($_POST['note']) ? test_input($_POST['note']) : '';
     $communication = (isset($_POST['communication']) && !empty($_POST['communication']) )
     ? implode(',',$_POST['communication']) : '';
-
-
-
-
-
      
     if (empty($_POST["first_name"])) {
     $first_name_err = "First Name is required";
@@ -141,32 +136,118 @@ if (isset($_POST['submit'])||isset($_POST['update'])) {
             
         }
     }
+
+
+    if(empty($_POST["r_pin"]))
+    {
+       $r_pin_err = " This field is required"; 
+       $error++;
+    }
+    else if(!preg_match('/^[0-9]*$/', $r_pin)) {
+        $r_pin_err = " Invalid Pin Code"; 
+       $error++;
+        
+    }
+
+
+    if(empty($_POST["r_phone"]))
+    {
+       $r_phone_err = " This field is required"; 
+       $error++;
+    }
+    else if(!preg_match('/^[0-9]*$/', $r_phone)) {
+        $r_phone_err = " Invalid Phone Number"; 
+       $error++;
+        
+    }
+
+    if(!preg_match("/^[0-9]*$/", $r_fax)) {
+        $r_fax_err = " Invalid Fax Number"; 
+        $error++;
     
+    }
+
+    if(!preg_match("/^[0-9]*$/", $o_fax)) {
+        $o_fax_err = " Invalid Fax Number"; 
+        $error++;
+    
+    }
+
+    if(!preg_match("/^[0-9]*$/", $o_phone)) {
+        $o_phone_err = " Invalid Phone Number"; 
+        $error++;
+    
+    }
+
+     if(!preg_match("/^[0-9]*$/", $o_pin)) {
+        $o_pin_err = " Invalid Pin Code"; 
+        $error++;
+    
+    }
+ 
     if(empty($_POST["gender"]))
     {
-       $gender_err = "Gender is required"; 
+       $gender_err = "This field is required"; 
        $error++;
     }
+
     if(empty($_POST["marital"]))
     {
-       $marital_err = "Marital Status is required"; 
+       $marital_err = "This field is required"; 
        $error++;
     }
+
     if(empty($_POST["r_street"]))
     {
-       $r_street_err = "Street is required"; 
+       $r_street_err = "This field is required"; 
        $error++;
     }
+
     if(empty($_POST["r_city"]))
     {
-       $r_city_err = "City is required"; 
+       $r_city_err = "This field is required"; 
        $error++;
     }
+
     if(empty($_POST["r_state"]))
     {
-       $r_state_err = "State is required"; 
+       $r_state_err = "This field is required"; 
        $error++;
     }
+
+    if(isset($_FILES['photo'])){
+      $file_name = $_FILES['photo']['name'];
+      $file_size =$_FILES['photo']['size'];
+      $file_tmp =$_FILES['photo']['tmp_name'];
+      $file_type=$_FILES['photo']['type'];
+      if (0!==$file_size) {
+          $file_ext=strtolower(end(explode('.',$_FILES['photo']['name'])));
+      
+      $extensions= array("jpeg","jpg","png");
+      
+      if(in_array($file_ext,$extensions)=== false){
+         $photo_err="extension not allowed, please choose a JPEG or PNG file.";
+         $error++;
+      }
+      else if($file_size > 2097152){
+         $photo_err='File size must be excately 2 MB';
+         $error++;
+      }
+      else if($error===0){
+        if(isset($_GET['emp_id'])) {
+            unlink("profile_pic/$photo");
+        }
+         move_uploaded_file($file_tmp,"profile_pic/".$file_name);
+         $photo=$file_name;
+
+      }
+      }
+      
+   }
+
+
+
+
 if (0===$error) {
      //for new form submit
     if (isset($_POST['submit'])) {
@@ -237,7 +318,7 @@ if (0===$error) {
      
   }
 }
-?>
+?>  
 <!DOCTYPE html>
 <html>
 <head>
@@ -246,6 +327,8 @@ if (0===$error) {
     <title>Registration</title>
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/form.css"  />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="container-fluid" id="container_1">
@@ -270,7 +353,7 @@ if (0===$error) {
         <div class="container">
             <h1>Registration Form</h1>
             <br>
-        <form role="form" id="empform" method="post" action="">
+        <form role="form" id="empform" method="post" action="" enctype="multipart/form-data">
         <div class="well"><h3>Personal Info:</h3>
             <div class="row">
                 <div class="col-lg-3 col-md-3">
@@ -300,7 +383,8 @@ if (0===$error) {
                 <div class="col-lg-3 col-md-3">
                     <div class="form-group">      
                         <label for="lname"><span class="error">*</span>Last Name:</label>
-                        <input type="text" class="form-control" id="lname" name="last_name" placeholder="Last Name" <?php  echo "value='$last_name'";?>>
+                        <input type="text" class="form-control" id="lname" name="last_name"
+                            placeholder="Last Name" <?php  echo "value='$last_name'";?>>
                         <br><span class="error"><?php echo $last_name_err; ?></span>
                     </div>
                 </div>
@@ -342,9 +426,30 @@ if (0===$error) {
                   </div>
               </div>
               <div class="col-lg-3 col-md-3">
-                  <div class="form-group">
-                      <label for="photo">Upload Photo:</label>
-                      <input type="file" class="form-control" id="photo" name="photo" accept="image/*" <?php  echo "value='$photo'";?>>
+                  <div class="form-group"
+                      <label for="photo">Upload Photo:<?php if(isset($_GET['emp_id'])) {?>
+                        <a  data-toggle="modal" data-target="#profile_pic">View Current Pic</a>
+                        <?php } ?></label>
+                      <input type="file" class="form-control" id="photo" name="photo">
+                      <br><span class="error"><?php echo $photo_err; ?></span>
+                         <!-- Modal -->
+                       <div id="profile_pic" class="modal fade" role="dialog">
+                         <div class="modal-dialog modal-sm">
+                           <div class="modal-content">
+                             <div class="modal-header">
+                               <button type="button" class="close" data-dismiss="modal">&times;</button>
+                               <h4 class="modal-title">Profile Pic</h4>
+                             </div>
+                             <div class="modal-body">
+                               <img src="profile_pic/<?php echo $photo;?>" class="img-rounded" alt="profile_pic" width="200" height="200">
+                             </div>
+                             <div class="modal-footer">
+                               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                             </div>
+                           </div>
+
+                         </div>
+                       </div>
                   </div>
               </div>
          </div>
@@ -396,11 +501,11 @@ if (0===$error) {
                          <option value="Uttar Pradesh" <?php if($r_state=='Uttar Pradesh'){ echo "selected"; } ?>>Uttar Pradesh</option>
                          <option value="West Bengal" <?php if($r_state=='West Bengal'){ echo "selected"; } ?>>West Bengal</option>
                      </select>
-                     <label for="r_pin"><span class="error">*</span>Pin no:</label><span class="error"><?php ?></span>
+                     <label for="r_pin"><span class="error">*</span>Pin no:</label><span class="error"><?php echo $r_pin_err?></span>
                      <input type="text" class="form-control" id="r_pin" placeholder="Pin No" name="r_pin" <?php  echo "value='$r_pin'";?>>
-                     <label for="r_phone"><span class="error">*</span>Phone No:</label><span class="error"><?php ?></span>
-                     <input type="text" class="form-control" id="r_phone" placeholder="eg:+919990001234" name="r_phone" <?php  echo "value='$r_phone'";?>>
-                     <label for="r_fax">Fax:</label>
+                     <label for="r_phone"><span class="error">*</span>Phone No:</label><span class="error"><?php echo $r_phone_err?></span>
+                     <input type="text" class="form-control" id="r_phone" placeholder="eg:9990001234" name="r_phone" <?php  echo "value='$r_phone'";?>>
+                     <label for="r_fax">Fax:</label><span class="error"><?php echo $r_fax_err ?></span>
                      <input type="text" class="form-control" id="r_fax" placeholder="Fax Number" name="r_fax" <?php  echo "value='$r_fax'";?>>
                   </div>
               </div>
@@ -451,11 +556,11 @@ if (0===$error) {
                        <option value="Uttar Pradesh" <?php if($o_state=='Uttar Pradesh'){ echo "selected"; } ?>>Uttar Pradesh</option>
                        <option value="West Bengal" <?php if($o_state=='West Bengal'){ echo "selected"; } ?>>West Bengal</option>
                   </select>
-                  <label for="o_pin">Pin no:</label>
+                  <label for="o_pin">Pin no:</label><span class="error"><?php echo $o_pin_err?></span>
                   <input type="text" class="form-control" id="o_pin" name="o_pin" placeholder="Pin No" <?php  echo "value='$o_pin'";?>>
-                  <label for="o_phone">Phone No:</label>
-                  <input type="text" class="form-control" id="o_phone" name="o_phone" placeholder="eg:+919990001234" <?php  echo "value='$o_phone'";?> >
-                  <label for="o_fax">Fax:</label>
+                  <label for="o_phone">Phone No:</label><span class="error"><?php echo $o_phone_err?></span>
+                  <input type="text" class="form-control" id="o_phone" name="o_phone" placeholder="eg:9990001234" <?php  echo "value='$o_phone'";?> >
+                  <label for="o_fax">Fax:</label><span class="error"><?php echo $o_fax_err?></span>
                   <input type="text" class="form-control" id="o_fax" name="o_fax" placeholder="Fax Number" <?php  echo "value='$o_fax'";?>>
               </div>
            </div>
