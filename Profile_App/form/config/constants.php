@@ -1,0 +1,6 @@
+<?php
+/**
+ * Constants file.
+ */
+
+define('', '');
