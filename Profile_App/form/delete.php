@@ -8,10 +8,10 @@ require_once('config/database_config.php');
 require_once('config/constants.php');
 
 if (isset($_GET['emp_id']) && preg_match('/^[0-9]*$/', $_GET['emp_id'])) {
-    $emp_id = stripslashes($_GET['emp_id']);
+    $emp_id = $conn->real_escape_string($_GET['emp_id']);
 
     // TODO: To use employee id instead of fetching from GET parameter
-    $photo = PROFILE_PIC . stripslashes($_GET['photo']);
+    $photo = PROFILE_PIC . $conn->real_escape_string($_GET['photo']);
 
     // Delete data from address table
     $sql = "DELETE FROM address WHERE employee_id = $emp_id";
@@ -22,7 +22,7 @@ if (isset($_GET['emp_id']) && preg_match('/^[0-9]*$/', $_GET['emp_id'])) {
     }
 
     // Delete data from employee table.
-	$sql = "DELETE FROM employee WHERE id = $emp_id";
+    $sql = "DELETE FROM employee WHERE id = $emp_id";
 	$result = mysqli_query($conn, $sql);
 
     if (FALSE === $result) {

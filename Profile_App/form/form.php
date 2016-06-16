@@ -329,7 +329,7 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
         <script src="js/bootstrap.min.js"></script>
     </head>
     <body>
-        <div class="container-fluid" id="container_1">
+        <div class="container-fluid" id="container_body">
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
                     <div class="navbar-header">
@@ -496,6 +496,8 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                 <div class="row">
                     <div class="col-lg-6 col-md-6">
                         <div class="form-group">
+                            <!-- TODO: Make address function and use it for
+                            Residence Address and Office Address  -->
                             <div class="well"><h3>Residence Address:</h3>
                                 <label for="r_street"><span class="error">*</span>Street Name:</label>
                                 &nbsp;&nbsp;&nbsp;
@@ -557,7 +559,6 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                 <select  id="o_state" class="form-control" name="o_state">
                                     <option value="">Select State</option>
                                     <?php
-
                                         // Fetch state list.
                                         $state_list = mysqli_query($conn,$all_state_list_query);
                                         echo state_list($o_state,$state_list);
@@ -619,39 +620,49 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                             <div class="col-lg-4 col-md-4">
                                 <label>Preferred communication medium:</label>
                             </div>
+                            <!-- TODO: fetch this from database -->
                             <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
                                 <div class="checkbox-inline" id="Mail">
-                                    <label><input type="checkbox" name="communication[]"
+                                    <label>
+                                        <input type="checkbox" name="communication[]"
                                             value="Mail"
                                             <?php if (strpos($communication, 'Mail') !== FALSE) {
-                                                    echo 'checked';
-                                                } ?>>Mail</label>
+                                                echo 'checked';
+                                            } ?>>Mail
+                                    </label>
                                 </div>
                             </div>
                             <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
                                 <div class="checkbox-inline" id="Message">
-                                    <label><input type="checkbox" name="communication[]"
-                                        value="Message"
-                                        <?php if (strpos($communication, 'Message') !== FALSE) {
+                                    <label>
+                                        <input type="checkbox" name="communication[]"
+                                            value="Message"
+                                            <?php if (strpos($communication, 'Message') !== FALSE) {
                                                 echo 'checked';
-                                            } ?>>Message</label>
+                                            } ?>>Message
+                                    </label>
                                 </div>
                             </div>
                             <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
                                 <div class="checkbox-inline" id="phone">
-                                    <label><input type="checkbox" name="communication[]"
-                                        value="Phone Call"
-                                        <?php if (strpos($communication, 'Phone Call') !== FALSE) {
+                                    <label>
+                                        <input type="checkbox" name="communication[]"
+                                            value="Phone Call"
+                                            <?php if (strpos($communication, 'Phone Call') !== FALSE) {
                                                 echo 'checked';
-                                            } ?>>Phone Call</label>
+                                            } ?>>Phone Call
+                                    </label>
                                 </div>
                             </div>
                             <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
                                 <div class="checkbox-inline" id="any">
-                                    <label><input type="checkbox" name="communication[]"
-                                        value="Any" <?php if (strpos($communication, 'Any') !== FALSE) {
+                                    <label>
+                                        <input type="checkbox" name="communication[]"
+                                            value="Any"
+                                            <?php if (strpos($communication, 'Any') !== FALSE) {
                                                 echo "checked";
-                                            } ?>>Any</label>
+                                            } ?>>Any
+                                    </label>
                                 </div>
                             </div>
                         </div>

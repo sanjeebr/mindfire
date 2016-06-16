@@ -9,16 +9,16 @@ require_once('display_error.php');
 require_once('config/constants.php');
 
 // Sql query to display employee data.
-$sql_query = " SELECT  employee.id AS emp_id,employee.first_name AS first_name,
-    employee.middle_name AS middle_name,employee.last_name AS last_name,
+$sql_query = "SELECT employee.id AS emp_id, employee.first_name AS first_name,
+    employee.middle_name AS middle_name, employee.last_name AS last_name,
     employee.date_of_birth AS date_of_birth, employee.prefix AS prefix,
-    employee.photo AS photo,employee.note AS note, employee.gender AS gender,
+    employee.photo AS photo, employee.note AS note, employee.gender AS gender,
     employee.marital_status AS marital, employee.communication AS communication,
     employee.employment AS employment, employee.employer AS employer,
-    residence.street AS r_street,residence.city AS r_city, residence.state AS r_state,
+    residence.street AS r_street, residence.city AS r_city, residence.state AS r_state,
     residence.pin_no AS r_pin, residence.phone AS r_phone, residence.fax AS r_fax,
-    office.street AS o_street,office.city AS o_city, office.state AS o_state,
-    office.pin_no AS o_pin,office.phone AS o_phone,office.fax AS o_fax
+    office.street AS o_street, office.city AS o_city, office.state AS o_state,
+    office.pin_no AS o_pin, office.phone AS o_phone, office.fax AS o_fax
     FROM employee
     LEFT JOIN address AS residence
     ON employee.id=residence.employee_id AND residence.type = 'residence'
@@ -67,9 +67,8 @@ $serial_no = 0;
             </nav>
             <?php
 
-                // To check if employee table is empty or not.
-                if ($num_rows > 0):
-
+            // To check if employee table is empty or not.
+            if ($num_rows > 0):
             ?>
             <div  class="table-responsive">
             <h2>Employee Details</h2>
@@ -104,13 +103,13 @@ $serial_no = 0;
                             </td>
                             <td>
                                 <?php echo '<strong>Name:</strong>' . $row['prefix']
-                                    . ' ' . $row['first_name'] .' '. $row['middle_name']
-                                    .' '. $row['last_name']
+                                    . ' ' . $row['first_name'] . ' ' . $row['middle_name']
+                                    . ' ' . $row['last_name']
                                     . '<br><strong>Gender:</strong>' . $row['gender']
                                     . '<br><strong>DOB:</strong>' .
-                                        date('d-M-Y',strtotime($row['date_of_birth'])) .
+                                    date('d-M-Y',strtotime($row['date_of_birth'])) .
                                     '<br><strong>Marital Status:</strong>'
-                                        . $row['marital'];
+                                    . $row['marital'];
                                 ?>
                             </td>
                             <td>
@@ -166,7 +165,8 @@ $serial_no = 0;
                                 ?>
                             </td>
                             <td>
-                                <a href="form.php?emp_id=<?php echo $row['emp_id'] ?>">
+                                <a href="form.php?emp_id=<?php
+                                    echo $row['emp_id'] ?>">
                                     <span class="glyphicon glyphicon-pencil"
                                         aria-hidden="true"></span>
                                 </a>
