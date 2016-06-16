@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Data initialization file.
  */
 
-//Employee Data initialize to null.
+// Employee Data initialize to null.
 $employee_data = array(
     'prefix' => '',
     'first_name' => '',
@@ -31,7 +32,7 @@ $employee_data = array(
     'photo' => ''
 );
 
-//Errors Data initialize to null.
+// Errors Data initialize to null.
 $error_list = array(
     'prefix_err' => '',
     'first_name_err' => '',

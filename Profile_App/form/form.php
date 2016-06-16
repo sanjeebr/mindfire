@@ -3,37 +3,35 @@
 require_once('config/database_config.php');
 require_once('config/initialization_config.php');
 require_once('utility.php');
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+require_once('display_error.php');
+require_once('config/constants.php');
 
 extract($employee_data, EXTR_SKIP);
-extract($error_list,EXTR_SKIP);
+extract($error_list, EXTR_SKIP);
 
 $is_update = FALSE;
 
 if (isset($_GET['emp_id']) && preg_match('/^[0-9]*$/', $_GET['emp_id'])) {
-    $emp_id = isset($_GET['emp_id']) ? test_input($_GET['emp_id']) : '';
+    $emp_id = isset($_GET['emp_id']) ? sanitize_input($_GET['emp_id']) : '';
 
-    $sql_query="SELECT  employee.id AS emp_id,employee.first_name AS first_name,
-            employee.middle_name AS middle_name, employee.last_name AS last_name,
-            employee.date_of_birth AS date_of_birth, employee.prefix AS prefix,
-            employee.photo AS photo, employee.note AS note,employee.gender AS gender,
-            employee.marital_status AS marital,employee.communication AS communication,
-            employee.employment AS employment,employee.employer AS employer,
-            residence.street AS r_street,residence.city AS r_city,
-            residence.state AS r_state,residence.pin_no AS r_pin,residence.phone AS r_phone,
-            residence.fax AS r_fax,office.street AS o_street,office.city AS o_city,
-            office.state AS o_state,office.pin_no AS o_pin,office.phone AS o_phone,
-            office.fax AS o_fax
+    $sql_query = "SELECT  employee.id AS emp_id,employee.first_name AS first_name,
+        employee.middle_name AS middle_name, employee.last_name AS last_name,
+        employee.date_of_birth AS date_of_birth, employee.prefix AS prefix,
+        employee.photo AS photo, employee.note AS note,employee.gender AS gender,
+        employee.marital_status AS marital,employee.communication AS communication,
+        employee.employment AS employment,employee.employer AS employer,
+        residence.street AS r_street,residence.city AS r_city,
+        residence.state AS r_state,residence.pin_no AS r_pin,residence.phone AS r_phone,
+        residence.fax AS r_fax,office.street AS o_street,office.city AS o_city,
+        office.state AS o_state,office.pin_no AS o_pin,office.phone AS o_phone,
+        office.fax AS o_fax
         FROM employee
         LEFT JOIN address AS residence ON employee.id = residence.employee_id AND
-            residence.type = 'residence'
+        residence.type = 'residence'
         LEFT JOIN address AS office ON employee.id = office.employee_id AND
-            office.type = 'office'
+        office.type = 'office'
         HAVING emp_id = $emp_id ";
-    $result=mysqli_query($conn,$sql_query);
+    $result = mysqli_query($conn,$sql_query);
 
     while ($row = mysqli_fetch_assoc($result)) {
         $prefix = $row['prefix'];
@@ -89,164 +87,163 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
     $employer = isset($_POST['employer']) ? sanitize_input($_POST['employer']) : '';
     $note = isset($_POST['note']) ? sanitize_input($_POST['note']) : '';
     $communication = (isset($_POST['communication']) && ! empty($_POST['communication']) )
-        ? implode(',',$_POST['communication']) : '';
+        ? implode(',', $_POST['communication']) : '';
 
 
     // To check error in first name.
     if (empty($_POST['first_name'])) {
-        $first_name_err = 'First Name is required';
+        $first_name_err = 'First Name is required.';
         $error++;
      } else {
-        // check if name only contains letters and whitespace
-        if (!preg_match('/^[a-zA-Z ]*$/',$first_name)) {
-            $first_name_err = 'Only letters and white space allowed';
+        // Check if name only contains letters and whitespace
+        if ( ! preg_match('/^[a-zA-Z ]*$/',$first_name)) {
+            $first_name_err = 'Only letters and white space allowed.';
             $error++;
         }
     }
 
-    //To check error in middle name.
-    if ( ! preg_match('/^[a-zA-Z ]*$/',$middle_name)) {
-        $middle_name_err = 'Only letters and white space allowed';
+    // To check error in middle name.
+    if ( ! preg_match('/^[a-zA-Z ]*$/', $middle_name)) {
+        $middle_name_err = 'Only letters and white space allowed.';
         $error++;
     }
 
-    //To check error in last name.
+    // To check error in last name.
     if (empty($_POST['last_name'])) {
-        $last_name_err = 'Last Name is required';
+        $last_name_err = 'Last Name is required.';
         $error++;
      } else {
 
-        // check if name only contains letters and whitespace
-        if (!preg_match('/^[a-zA-Z ]*$/',$last_name)) {
-          $last_name_err = 'Only letters and white space allowed';
+        // Check if name only contains letters and whitespace
+        if ( ! preg_match('/^[a-zA-Z ]*$/', $last_name)) {
+          $last_name_err = 'Only letters and white space allowed.';
           $error++;
         }
     }
 
-    //To check error in date of birth.
+    // To check error in date of birth.
     if (empty($_POST['date_of_birth'])) {
-        $dob_err = 'Date of Birth is required';
+        $dob_err = 'Date of Birth is required.';
         $error++;
-    }
-    else {
+    } else {
         $date = explode('-', $date_of_birth);
 
         if (count($date) !== 3 || ! checkdate($date[1], $date[2], $date[0])){
-            $dob_err = 'Date of Birth is invalid ';
+            $dob_err = 'Date of Birth is invalid.';
         }
     }
 
     // To check error in pin.
     if (empty($_POST['r_pin'])) {
-       $r_pin_err = 'This field is required';
+       $r_pin_err = 'This field is required.';
        $error++;
-    }
-    else if (!preg_match('/^[0-9]{6}$/', $r_pin)) {
-        $r_pin_err = 'Invalid Pin Code';
+    } else if ( ! preg_match('/^[0-9]{6}$/', $r_pin)) {
+        $r_pin_err = 'Invalid Pin Code.';
         $error++;
     }
 
-    if (!preg_match('/^[0-9]*$/', $o_pin)) {
-        $o_pin_err = 'Invalid Pin Code';
+    if ( ! preg_match('/^[0-9]{6}$/', $o_pin) && ! empty($o_pin)) {
+        $o_pin_err = 'Invalid Pin Code.';
         $error++;
     }
 
-    //To check error in mobile no.
+    // To check error in mobile no.
     if (empty($_POST['r_phone'])){
-       $r_phone_err = 'This field is required';
+       $r_phone_err = 'This field is required.';
        $error++;
-    }
-    else if (!preg_match('/^[0-9]{10}$/', $r_phone)) {
-        $r_phone_err = 'Invalid Phone Number';
+    } else if ( ! preg_match('/^[0-9]{10}$/', $r_phone)) {
+        $r_phone_err = 'Invalid Phone Number.';
        $error++;
    }
 
-    if (!preg_match('/^[0-9]*$/', $o_phone)) {
-        $o_phone_err = 'Invalid Phone Number';
+    if ( ! preg_match('/^[0-9]{10}$/', $o_phone) && ! empty($o_phone)) {
+        $o_phone_err = 'Invalid Phone Number.';
         $error++;
     }
 
-    //To check error in fax number.
-    if (!preg_match('/^[0-9]*$/', $r_fax)) {
-        $r_fax_err = 'Invalid Fax Number';
+    // To check error in fax number.
+    if ( ! preg_match('/^[0-9]{11}$/', $r_fax) && ! empty($r_fax)) {
+        $r_fax_err = 'Invalid Fax Number.';
         $error++;
     }
 
-    if (!preg_match('/^[0-9]*$/', $o_fax)) {
-        $o_fax_err = 'Invalid Fax Number';
+    if ( ! preg_match('/^[0-9]{11}$/', $o_fax) && ! empty($o_fax)) {
+        $o_fax_err = 'Invalid Fax Number.';
         $error++;
     }
 
-    //To check error in gender.
-    if (empty($_POST['gender'])){
-       $gender_err = 'This field is required';
+    // To check error in gender.
+    if (empty($_POST['gender'])) {
+       $gender_err = 'This field is required.';
        $error++;
     }
 
-    //To check error in marital status.
-    if (empty($_POST['marital'])){
-       $marital_err = 'This field is required';
+    // To check error in marital status.
+    if (empty($_POST['marital'])) {
+       $marital_err = 'This field is required.';
        $error++;
     }
 
-    //To check error in residence.
-    if (empty($_POST['r_street'])){
-       $r_street_err = 'This field is required';
+    // To check residence street is empty or not.
+    if (empty($_POST['r_street'])) {
+       $r_street_err = 'This field is required.';
        $error++;
     }
 
-    if (empty($_POST['r_city'])){
-       $r_city_err = 'This field is required';
+    // To check residence city is empty or not.
+    if (empty($_POST['r_city'])) {
+       $r_city_err = 'This field is required.';
        $error++;
     }
 
-    if (empty($_POST['r_state'])){
-       $r_state_err = 'This field is required';
+    // To check residence state is empty or not.
+    if (empty($_POST['r_state'])) {
+       $r_state_err = 'This field is required.';
        $error++;
     }
 
-    if (isset($_FILES['photo'])){
+    if (isset($_FILES['photo'])) {
         $file_name = $_FILES['photo']['name'];
-        $file_size =$_FILES['photo']['size'];
-        $file_tmp =$_FILES['photo']['tmp_name'];
-        $file_type=$_FILES['photo']['type'];
+        $file_size = $_FILES['photo']['size'];
+        $file_tmp = $_FILES['photo']['tmp_name'];
+        $file_type = $_FILES['photo']['type'];
 
-        //Check if image is selected or not.
+        // Check if image is selected or not.
         if (0 !== $file_size) {
-            $file_ext = strtolower(end(explode('.',$_FILES['photo']['name'])));
-            $extensions = array('jpeg','jpg','png');
+            $file_ext = strtolower(end(explode('.', $_FILES['photo']['name'])));
+            $extensions = array('jpeg', 'jpg', 'png');
 
-            //Check if extension is valid or not then check the size must not greater then 2MB..
-            if (in_array($file_ext,$extensions) === false){
+            // Check if extension is valid or not then check the size must not greater then 2MB.
+            if (in_array($file_ext,$extensions) === FALSE){
                 $photo_err = 'Please choose a JPEG or PNG file.';
                 $error++;
-            }
-            else if ($file_size > 2097152){
+            } else if ($file_size > 2097152) {
                 $photo_err = 'File size must be excately 2 MB';
                 $error++;
-            }
-            else if(0 === $error){
+            } else if(0 === $error){
                 if(isset($_GET['emp_id'])) {
-                    unlink("profile_pic/$photo");
+                    unlink(PROFILE_PIC . $photo);
                 }
-                move_uploaded_file($file_tmp,'profile_pic/'.$file_name);
-                $photo=$file_name;
+
+                move_uploaded_file($file_tmp, PROFILE_PIC . $file_name);
+
+                // TODO: Save the photo name as Emp_id.jpg instead of $file_name.
+                $photo = $file_name;
             }
         }
     }
 
-   //If there is any error or not.
+   // If there is any error or not.
    if (0 === $error) {
-
-        //For Creating  New Employee Data
+        // For Creating  New Employee Data
         if (isset($_POST['submit'])) {
             $sql_query = "INSERT INTO employee
-                    (first_name, middle_name, last_name, date_of_birth, prefix,
-                    photo, note, gender, marital_status,communication, employment, employer)
+                (first_name, middle_name, last_name, date_of_birth, prefix,
+                photo, note, gender, marital_status,communication, employment, employer)
                 VALUES ('$first_name', '$middle_name', '$last_name', '$date_of_birth',
-                    '$prefix', '$photo','$note', '$gender','$marital','$communication',
-                    '$employment','$employer')";
-            $result = mysqli_query($conn,$sql_query);
+                '$prefix', '$photo','$note', '$gender','$marital','$communication',
+                '$employment','$employer')";
+            $result = mysqli_query($conn, $sql_query);
             $employee_id = mysqli_insert_id($conn);
 
             if (FALSE === $result) {
@@ -254,47 +251,62 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
             }
 
             $sql_query = "INSERT INTO `address`
-                    (`employee_id`, `type`, `phone`, `fax`, `street`, `pin_no`,`city`, `state`)
+                (`employee_id`, `type`, `phone`, `fax`, `street`, `pin_no`,`city`, `state`)
                 VALUES ($employee_id,'residence','$r_phone','$r_fax','$r_street','$r_pin',
-                    '$r_city','$r_state'),
-                    ($employee_id,'office','$o_phone','$o_fax','$o_street','$o_pin','$o_city'
-                    ,'$o_state')";
+                '$r_city','$r_state'),
+                ($employee_id,'office','$o_phone','$o_fax','$o_street','$o_pin','$o_city'
+                ,'$o_state')";
 
-            $result = mysqli_query($conn,$sql_query);
+            $result = mysqli_query($conn, $sql_query);
 
             if (FALSE === $result) {
-
-                 header('Location: error.php');
+                header('Location: error.php');
             }
 
-            header('Location: output.php');
+            header('Location: employee.php');
         }
-        //For Updating Employee Data
+        // For Updating Employee Data
         else if (isset($_POST['update']) && isset($_GET['emp_id'])) {
             $sql_query = "UPDATE `employee`
-                SET `first_name`='$first_name',`middle_name`='$middle_name',
-                    `last_name`='$last_name',`date_of_birth`= '$date_of_birth',
-                    `prefix`='$prefix',`photo`='$photo',`note`='$note',`gender`='$gender',
-                    `marital_status`='$marital',`communication`='$communication',
-                    `employment`='$employment',`employer`='$employer'
+                SET `first_name` = '$first_name', `middle_name` = '$middle_name',
+                `last_name` = '$last_name', `date_of_birth` = '$date_of_birth',
+                `prefix` = '$prefix', `photo` = '$photo', `note` = '$note',
+                `gender` = '$gender', `marital_status` = '$marital',
+                `communication` = '$communication', `employment` = '$employment',
+                `employer` = '$employer'
                 WHERE id = $emp_id";
-            $result = mysqli_query($conn,$sql_query);
+            $result = mysqli_query($conn, $sql_query);
+
+             if (FALSE === $result) {
+                header('Location: error.php');
+            }
+
 
             $sql_query = "UPDATE `address`
-                SET `phone`= '$o_phone',`fax`='$o_fax',
-                    `street`= '$o_street',`pin_no`= '$o_pin',`city`= '$o_city',
-                    `state` = '$o_state'
+                SET `phone` = '$o_phone',`fax` = '$o_fax',
+                `street` = '$o_street',`pin_no` = '$o_pin',`city` = '$o_city',
+                `state` = '$o_state'
                 WHERE employee_id = $emp_id AND type = 'office'";
-            $result = mysqli_query($conn,$sql_query);
+            $result = mysqli_query($conn, $sql_query);
+
+             if (FALSE === $result) {
+                header('Location: error.php');
+            }
+
 
             $sql_query = "UPDATE `address`
-                SET `phone`= '$r_phone',`fax`='$r_fax',
-                    `street`= '$r_street',`pin_no`= '$r_pin',`city`= '$r_city',
-                    `state` = '$r_state'
+                SET `phone`= '$r_phone',`fax` = '$r_fax',
+                `street`= '$r_street',`pin_no` = '$r_pin',`city` = '$r_city',
+                `state` = '$r_state'
                 WHERE employee_id = $emp_id AND type = 'residence'";
-            $result = mysqli_query($conn,$sql_query);
+            $result = mysqli_query($conn, $sql_query);
 
-            header("Location: output.php");
+             if (FALSE === $result) {
+                header('Location: error.php');
+            }
+
+
+            header('Location: employee.php');
         }
 
     }
@@ -306,7 +318,7 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,
                 user-scalable=no">
-        <?php if($is_update): ?>
+        <?php if ($is_update): ?>
         <title>Update</title>
         <?php else: ?>
         <title>Registration</title>
@@ -332,7 +344,7 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                     <div class="collapse navbar-collapse" id="myNavbar">
                         <ul class="nav navbar-nav">
                             <li class="active"><a href="">Registration</a></li>
-                            <li ><a href="output.php">Employee Details</a></li>
+                            <li ><a href="employee.php">Employee Details</a></li>
                         </ul>
                     </div>
                 </div>
@@ -355,9 +367,9 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                 </label>
                                 <select name="prefix" id="prefix" class="form-control">
                                     <option value="Mr">Mr</option>
-                                    <option value="Ms" <?php if ($prefix == 'Ms'){
+                                    <option value="Ms" <?php if ($prefix === 'Ms') {
                                         echo "selected"; } ?>>Ms</option>
-                                    <option value="Mrs" <?php if ($prefix == 'Mrs'){
+                                    <option value="Mrs" <?php if ($prefix === 'Mrs') {
                                         echo "selected"; } ?>>Mrs</option>
                                 </select>
                             </div>
@@ -369,9 +381,9 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                 </label>
                                 <input type="text" class="form-control" id="fname"
                                     name="first_name" placeholder="First Name"
-                                    <?php  echo "value='$first_name'";?>>
+                                    <?php  echo "value='$first_name'"; ?>>
                                 <br>
-                                <span class="error"><?php echo $first_name_err;?></span>
+                                <span class="error"><?php echo $first_name_err; ?></span>
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-3">
@@ -379,9 +391,9 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                 <label for="mname">Middle Name:</label>
                                 <input type="text" class="form-control" id="mname"
                                     name="middle_name" placeholder="Middle Name"
-                                    <?php  echo "value='$middle_name'";?>>
+                                    <?php  echo "value='$middle_name'"; ?>>
                                 <br>
-                                <span class="error"><?php echo $middle_name_err;?></span>
+                                <span class="error"><?php echo $middle_name_err; ?></span>
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-3">
@@ -390,7 +402,7 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                     <span class="error">*</span>Last Name:
                                 </label>
                                 <input type="text" class="form-control" id="lname" name="last_name"
-                                    placeholder="Last Name" <?php  echo "value='$last_name'";?>>
+                                    placeholder="Last Name" <?php  echo "value='$last_name'"; ?>>
                                 <br><span class="error"><?php echo $last_name_err; ?></span>
                             </div>
                         </div>
@@ -407,7 +419,9 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                    <label class="radio-inline">
                                         <input type="radio" id="female" name="gender"
                                             value="Female"
-                                            <?php if ($gender == 'Female'){ echo 'checked'; } ?>>Female
+                                            <?php if ($gender === 'Female') {
+                                                    echo 'checked';
+                                                } ?>>Female
                                    </label>
                                </div>
                             </div>
@@ -419,8 +433,8 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                 </label>
                                 <div class="date">
                                     <input type="date" name="date_of_birth" class="form-control"
-                                        id="dob" <?php  echo "value='$date_of_birth'";?> >
-                                    <br><span class="error"><?php echo $dob_err;?></span>
+                                        id="dob" <?php  echo "value='$date_of_birth'"; ?>>
+                                    <br><span class="error"><?php echo $dob_err; ?></span>
                                 </div>
                             </div>
                         </div>
@@ -436,17 +450,19 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                     </label>
                                     <label class="radio-inline">
                                         <input type="radio" id="married" name="marital"
-                                             value="Married" <?php if ($marital == 'Married'){ echo 'checked'; } ?>>Married
+                                             value="Married" <?php if ($marital === 'Married') {
+                                                    echo 'checked';
+                                                } ?>>Married
                                     </label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-3">
                             <div class="form-group">
-                                <label for="photo">Upload Photo:<?php if ($is_update) {?>
-                                 <a  data-toggle="modal" data-target="#profile_pic">
+                                <label for="photo">Upload Photo:<?php if ($is_update) { ?>
+                                    <a  data-toggle="modal" data-target="#profile_pic">
                                     View Current Pic</a>
-                                 <?php } ?></label>
+                                <?php } ?></label>
                                 <input type="file" class="form-control" id="photo" name="photo">
                                 <br><span class="error"><?php echo $photo_err; ?></span>
 
@@ -460,7 +476,9 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                                 <h4 class="modal-title">Profile Pic</h4>
                                             </div>
                                             <div class="modal-body">
-                                                <img src="profile_pic/<?php echo $photo;?>"
+                                                <img src="<?php echo !empty($photo)
+                                                    ? PROFILE_PIC . $photo :
+                                                    PROFILE_PIC . $gender .'.jpg' ; ?>"
                                                     class="img-rounded" alt="profile_pic"
                                                     width="200" height="200">
                                             </div>
@@ -480,42 +498,47 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                         <div class="form-group">
                             <div class="well"><h3>Residence Address:</h3>
                                 <label for="r_street"><span class="error">*</span>Street Name:</label>
-                                <span class="error"><?php echo $r_street_err?></span>
+                                &nbsp;&nbsp;&nbsp;
+                                <span class="error"><?php echo $r_street_err ?></span>
                                 <input type="text" class="form-control" id="r_street"
                                     name="r_street" placeholder="Street name..."
-                                    <?php echo "value='$r_street'";?>>
+                                    <?php echo "value='$r_street'"; ?>>
                                 <label for="r_city"><span class="error">*</span>City:</label>
+                                &nbsp;&nbsp;&nbsp;
                                 <span class="error"><?php echo $r_city_err?></span>
                                 <input type="text" class="form-control" id="r_city"
                                     name="r_city" placeholder="City..."
-                                    <?php  echo "value='$r_city'";?>>
+                                    <?php  echo "value='$r_city'"; ?>>
                                 <label for="r_state"><span class="error">*</span>State:</label>
-                                <span class="error"><?php echo $r_state_err?></span>
+                                &nbsp;&nbsp;&nbsp;
+                                <span class="error"><?php echo $r_state_err ?></span>
                                 <select  id="r_state" class="form-control" name="r_state">
                                     <option value="">Select State</option>
                                     <?php
-
-                                        //Fetch state list.
+                                        // Fetch state list.
                                         $all_state_list_query = "SELECT name FROM `states`";
-                                        $state_list = mysqli_query($conn,$all_state_list_query);
-                                        echo state_list($r_state,$state_list);
+                                        $state_list = mysqli_query($conn, $all_state_list_query);
+                                        echo state_list($r_state, $state_list);
                                     ?>
                                 </select>
                                 <label for="r_pin"><span class="error">*</span>Pin no:</label>
-                                <span class="error"><?php echo $r_pin_err?></span>
+                                &nbsp;&nbsp;&nbsp;
+                                <span class="error"><?php echo $r_pin_err ?></span>
                                 <input type="text" class="form-control" id="r_pin"
                                     placeholder="Pin No" name="r_pin"
-                                    <?php  echo "value='$r_pin'";?>>
+                                    <?php  echo "value='$r_pin'"; ?>>
                                 <label for="r_phone"><span class="error">*</span>Mobile No:</label>
-                                <span class="error"><?php echo $r_phone_err?></span>
+                                &nbsp;&nbsp;&nbsp;
+                                <span class="error"><?php echo $r_phone_err ?></span>
                                 <input type="text" class="form-control" id="r_phone"
                                     placeholder="eg:9990001234" name="r_phone"
-                                    <?php  echo "value='$r_phone'";?>>
+                                    <?php  echo "value='$r_phone'"; ?>>
                                 <label for="r_fax">Fax:</label>
+                                &nbsp;&nbsp;&nbsp;
                                 <span class="error"><?php echo $r_fax_err ?></span>
                                 <input type="text" class="form-control" id="r_fax"
                                     placeholder="Fax Number" name="r_fax"
-                                    <?php  echo "value='$r_fax'";?>>
+                                    <?php  echo "value='$r_fax'"; ?>>
                             </div>
                         </div>
                     </div>
@@ -525,36 +548,39 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                 <label for="o_street">Street Name:</label>
                                 <input type="text" class="form-control" id="o_street"
                                     name="o_street" placeholder="Street name..."
-                                    <?php  echo "value='$o_street'";?>>
+                                    <?php  echo "value='$o_street'"; ?>>
                                 <label for="o_city">City:</label>
                                 <input type="text" class="form-control" id="o_city"
                                     name="o_city" placeholder="City.."
-                                    <?php  echo "value='$o_city'";?>>
+                                    <?php  echo "value='$o_city'"; ?>>
                                 <label for="o_state">State:</label>
                                 <select  id="o_state" class="form-control" name="o_state">
                                     <option value="">Select State</option>
                                     <?php
 
-                                        //Fetch state list.
+                                        // Fetch state list.
                                         $state_list = mysqli_query($conn,$all_state_list_query);
                                         echo state_list($o_state,$state_list);
                                     ?>
                                 </select>
                                 <label for="o_pin">Pin no:</label>
-                                <span class="error"><?php echo $o_pin_err?></span>
+                                &nbsp;&nbsp;&nbsp;
+                                <span class="error"><?php echo $o_pin_err ?></span>
                                 <input type="text" class="form-control" id="o_pin"
                                     name="o_pin" placeholder="Pin No"
-                                    <?php  echo "value='$o_pin'";?>>
-                                <label for="o_phone">Phone No:</label><span class="error">
-                                    <?php echo $o_phone_err?></span>
+                                    <?php  echo "value='$o_pin'"; ?>>
+                                <label for="o_phone">Mobile No:</label>
+                                &nbsp;&nbsp;&nbsp;
+                                <span class="error"><?php echo $o_phone_err ?></span>
                                 <input type="text" class="form-control" id="o_phone"
                                     name="o_phone" placeholder="eg:9990001234"
-                                    <?php  echo "value='$o_phone'";?> >
-                                <label for="o_fax">Fax:</label><span class="error">
-                                    <?php echo $o_fax_err?></span>
+                                    <?php  echo "value='$o_phone'"; ?> >
+                                <label for="o_fax">Fax:</label>
+                                &nbsp;&nbsp;&nbsp;
+                                <span class="error"><?php echo $o_fax_err ?></span>
                                 <input type="text" class="form-control" id="o_fax"
                                     name="o_fax" placeholder="Fax Number"
-                                    <?php  echo "value='$o_fax'";?>>
+                                    <?php  echo "value='$o_fax'"; ?>>
                             </div>
                         </div>
                     </div>
@@ -566,7 +592,7 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                 <label for="employment">Employment:</label>
                                 <input type="text" class="form-control" id="employment"
                                     name="employment" placeholder="Employment"
-                                    <?php  echo "value='$employment'";?>>
+                                    <?php echo "value='$employment'"; ?>>
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6">
@@ -574,7 +600,7 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                 <label for="employer">Employer:</label>
                                 <input type="text" class="form-control" id="employer"
                                     name="employer" placeholder="Employer"
-                                    <?php  echo "value='$employer'";?>>
+                                    <?php  echo "value='$employer'"; ?>>
                             </div>
                         </div>
                     </div>
@@ -584,7 +610,7 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                 <label for="extra">Extra Note:</label>
                                 <textarea class="form-control" id="extra" name="note"
                                     placeholder="Extra Note..">
-                                    <?php  echo "$note";?></textarea>
+                                    <?php  echo "$note"; ?></textarea>
                             </div>
                         </div>
                     </div>
@@ -597,46 +623,50 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                 <div class="checkbox-inline" id="Mail">
                                     <label><input type="checkbox" name="communication[]"
                                             value="Mail"
-                                            <?php if (strpos($communication, 'Mail') !== FALSE)
-                                            { echo 'checked';}?>>Mail</label>
+                                            <?php if (strpos($communication, 'Mail') !== FALSE) {
+                                                    echo 'checked';
+                                                } ?>>Mail</label>
                                 </div>
                             </div>
                             <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
                                 <div class="checkbox-inline" id="Message">
                                     <label><input type="checkbox" name="communication[]"
                                         value="Message"
-                                        <?php if (strpos($communication, 'Message') !== FALSE)
-                                        { echo 'checked';}?>>Message</label>
+                                        <?php if (strpos($communication, 'Message') !== FALSE) {
+                                                echo 'checked';
+                                            } ?>>Message</label>
                                 </div>
                             </div>
                             <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
                                 <div class="checkbox-inline" id="phone">
                                     <label><input type="checkbox" name="communication[]"
                                         value="Phone Call"
-                                        <?php if (strpos($communication, 'Phone Call') !== FALSE)
-                                        { echo 'checked';}?>>Phone Call</label>
+                                        <?php if (strpos($communication, 'Phone Call') !== FALSE) {
+                                                echo 'checked';
+                                            } ?>>Phone Call</label>
                                 </div>
                             </div>
                             <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
                                 <div class="checkbox-inline" id="any">
                                     <label><input type="checkbox" name="communication[]"
-                                        value="Any" <?php if (strpos($communication, 'Any')!== FALSE)
-                                        { echo "checked";}?>>Any</label>
+                                        value="Any" <?php if (strpos($communication, 'Any') !== FALSE) {
+                                                echo "checked";
+                                            } ?>>Any</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row form-group text-center">
-                    <?php if($is_update) {?>
+                    <?php if($is_update): ?>
                     <a class="btn btn-danger btn-lg" href="output.php" >Cancel</a>
-                        &nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;
                     <button type="submit" class="btn btn-warning btn-lg" name="update">Update</button>
-                    <?php }else{ ?>
+                    <?php else: ?>
                     <button class="btn btn-danger btn-lg" type="reset" >Reset</button>
-                        &nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;
                     <button type="submit" class="btn btn-warning btn-lg" name="submit">Submit</button>
-                    <?php } ?>
+                    <?php endif ?>
                 </div>
             </form>
             </div>

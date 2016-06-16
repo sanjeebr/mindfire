@@ -1,12 +1,12 @@
 <?php
+
 /**
  * Display all employee data file.
  */
-require_once('config/database_config.php');
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+require_once('config/database_config.php');
+require_once('display_error.php');
+require_once('config/constants.php');
 
 // Sql query to display employee data.
 $sql_query = " SELECT  employee.id AS emp_id,employee.first_name AS first_name,
@@ -68,7 +68,7 @@ $serial_no = 0;
             <?php
 
                 // To check if employee table is empty or not.
-                if ($num_rows > 0) {
+                if ($num_rows > 0):
 
             ?>
             <div  class="table-responsive">
@@ -76,14 +76,14 @@ $serial_no = 0;
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th><h4>Serial No</h4></th>
-                            <th><h4>Photo</h4></th>
-                            <th><h4>Personal Info</h4></th>
-                            <th><h4>Residence Address</h4></th>
-                            <th><h4>Office Address</h4></th>
-                            <th><h4>Other Info</h4></th>
-                            <th><h4>Edit</h4></th>
-                            <th><h4>Delete</h4></th>
+                            <th><h4><strong>Serial No</strong></h4></th>
+                            <th><h4><strong>Photo</strong></h4></th>
+                            <th><h4><strong>Personal Info</strong></h4></th>
+                            <th><h4><strong>Residence Address</strong></h4></th>
+                            <th><h4><strong>Office Address</strong></h4></th>
+                            <th><h4><strong>Other Info</strong></h4></th>
+                            <th><h4><strong>Edit</strong></h4></th>
+                            <th><h4><strong>Delete</strong></h4></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -96,8 +96,9 @@ $serial_no = 0;
                                 <?php echo ++$serial_no; ?>
                             </td>
                             <td>
-                                <img src="profile_pic/<?php $pic = ! empty($row['photo']) ?
-                                    $row['photo'] : $row['gender'] . '.jpg' ; echo $pic;?>"
+                                <img src="<?php $pic = ! empty($row['photo']) ?
+                                    PROFILE_PIC . $row['photo'] : PROFILE_PIC . $row['gender'] . '.jpg' ;
+                                    echo $pic; ?>"
                                     class="img-rounded" alt="profile_pic" width="160"
                                     height="160">
                             </td>
@@ -124,37 +125,48 @@ $serial_no = 0;
                                     . '<br><strong>Phone no:</strong>'
                                     . $row['r_phone']
                                     . '<br><strong>Fax no:</strong>'
-                                    . $row['r_fax'];
+                                    . ( ! empty($row['r_fax'])
+                                        ? $row['r_fax'] : ' N/A')
                                 ?>
                             </td>
                             <td>
                                 <?php echo '<strong>Street:</strong>'
-                                    . (!empty($row['o_street']) ? $row['o_street'] : "NA")
-                                    . '<br><strong>City:<strong>'
-                                    . $row['o_city']
+                                    . ( ! empty($row['o_street'])
+                                        ? $row['o_street'] : ' N/A')
+                                    . '<br><strong>City:</strong>'
+                                    . ( ! empty($row['o_city'])
+                                        ? $row['o_city'] : ' N/A')
                                     . '<br><strong>State:</strong>'
-                                    . $row['o_state']
+                                    . ( ! empty($row['o_state'])
+                                        ? $row['o_state'] : ' N/A')
                                     . '<br><strong>Pin no:</strong>'
-                                    . $row['o_pin']
+                                    . ( ! empty($row['o_pin'])
+                                        ? $row['o_pin'] : ' N/A')
                                     . '<br><strong>Phone no:</strong>'
-                                    . $row['o_phone']
+                                    . ( ! empty($row['o_phone'])
+                                        ? $row['o_phone'] : ' N/A')
                                     . '<br><strong>Fax no:</strong>'
-                                    .$row['o_fax'];
+                                    . ( ! empty($row['o_fax'])
+                                        ? $row['o_fax'] : ' N/A');
                                 ?>
                             </td>
                             <td>
                                 <?php echo '<strong>Employment:</strong>'
-                                    . $row['employment']
+                                    . ( ! empty($row['employment'])
+                                        ? $row['employment'] : ' N/A')
                                     . '<br><strong>Employer:</strong>'
-                                    . $row['employer']
+                                    . ( ! empty($row['employer'])
+                                        ? $row['employer'] : ' N/A')
                                     . '<br><strong>Note:</strong>'
-                                    . $row['note']
+                                    . ( ! empty($row['note'])
+                                        ? $row['note'] : ' N/A')
                                     . '<br><strong>Communication:</strong>'
-                                    . $row['communication'];
+                                    . ( ! empty($row['communication'])
+                                        ? $row['communication'] : ' N/A')
                                 ?>
                             </td>
                             <td>
-                                <a href="form.php?emp_id=<?php echo $row['emp_id']?>">
+                                <a href="form.php?emp_id=<?php echo $row['emp_id'] ?>">
                                     <span class="glyphicon glyphicon-pencil"
                                         aria-hidden="true"></span>
                                 </a>
@@ -171,13 +183,13 @@ $serial_no = 0;
                     </tbody>
                 </table>
             </div>
-            <?php } else {?>
+            <?php  else : ?>
             <div class="container">
                 <div class="alert alert-danger">
                     <h2>No employee records.</h2>
                 </div>
             </div>
-        <?php }?>
+            <?php endif ?>
         </div>
     </body>
 </html>
