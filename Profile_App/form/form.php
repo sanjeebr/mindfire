@@ -2,7 +2,7 @@
 
 require_once('config/database_config.php');
 require_once('config/initialization_config.php');
-require_once('utility.php');
+require_once('helper/utility.php');
 require_once('display_error.php');
 require_once('config/constants.php');
 
@@ -149,11 +149,11 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
 
     // To check error in mobile no.
     if (empty($_POST['r_phone'])){
-       $r_phone_err = 'This field is required.';
-       $error++;
+        $r_phone_err = 'This field is required.';
+        $error++;
     } else if ( ! preg_match('/^[0-9]{10}$/', $r_phone)) {
         $r_phone_err = 'Invalid Phone Number.';
-       $error++;
+        $error++;
    }
 
     if ( ! preg_match('/^[0-9]{10}$/', $o_phone) && ! empty($o_phone)) {
@@ -174,32 +174,32 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
 
     // To check error in gender.
     if (empty($_POST['gender'])) {
-       $gender_err = 'This field is required.';
-       $error++;
+        $gender_err = 'This field is required.';
+        $error++;
     }
 
     // To check error in marital status.
     if (empty($_POST['marital'])) {
-       $marital_err = 'This field is required.';
-       $error++;
+        $marital_err = 'This field is required.';
+        $error++;
     }
 
     // To check residence street is empty or not.
     if (empty($_POST['r_street'])) {
-       $r_street_err = 'This field is required.';
-       $error++;
+        $r_street_err = 'This field is required.';
+        $error++;
     }
 
     // To check residence city is empty or not.
     if (empty($_POST['r_city'])) {
-       $r_city_err = 'This field is required.';
-       $error++;
+        $r_city_err = 'This field is required.';
+        $error++;
     }
 
     // To check residence state is empty or not.
     if (empty($_POST['r_state'])) {
-       $r_state_err = 'This field is required.';
-       $error++;
+        $r_state_err = 'This field is required.';
+        $error++;
     }
 
     if (isset($_FILES['photo'])) {
@@ -220,8 +220,8 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
             } else if ($file_size > 2097152) {
                 $photo_err = 'File size must be excately 2 MB';
                 $error++;
-            } else if(0 === $error){
-                if(isset($_GET['emp_id'])) {
+            } else if (0 === $error) {
+                if (isset($_GET['emp_id'])) {
                     unlink(PROFILE_PIC . $photo);
                 }
 
@@ -317,7 +317,7 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,
-                user-scalable=no">
+            user-scalable=no">
         <?php if ($is_update): ?>
         <title>Update</title>
         <?php else: ?>
@@ -420,8 +420,8 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                         <input type="radio" id="female" name="gender"
                                             value="Female"
                                             <?php if ($gender === 'Female') {
-                                                    echo 'checked';
-                                                } ?>>Female
+                                                echo 'checked';
+                                            } ?>>Female
                                    </label>
                                </div>
                             </div>
@@ -450,9 +450,9 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                     </label>
                                     <label class="radio-inline">
                                         <input type="radio" id="married" name="marital"
-                                             value="Married" <?php if ($marital === 'Married') {
-                                                    echo 'checked';
-                                                } ?>>Married
+                                            value="Married" <?php if ($marital === 'Married') {
+                                                echo 'checked';
+                                            } ?>>Married
                                     </label>
                                 </div>
                             </div>
@@ -478,7 +478,7 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
                                             <div class="modal-body">
                                                 <img src="<?php echo !empty($photo)
                                                     ? PROFILE_PIC . $photo :
-                                                    PROFILE_PIC . $gender .'.jpg' ; ?>"
+                                                    DEFAULT_PROFILE_PIC . $gender .'.jpg' ; ?>"
                                                     class="img-rounded" alt="profile_pic"
                                                     width="200" height="200">
                                             </div>

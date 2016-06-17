@@ -96,7 +96,7 @@ $serial_no = 0;
                             </td>
                             <td>
                                 <img src="<?php $pic = ! empty($row['photo']) ?
-                                    PROFILE_PIC . $row['photo'] : PROFILE_PIC . $row['gender'] . '.jpg' ;
+                                    PROFILE_PIC . $row['photo'] : DEFAULT_PROFILE_PIC . $row['gender'] . '.jpg' ;
                                     echo $pic; ?>"
                                     class="img-rounded" alt="profile_pic" width="160"
                                     height="160">
