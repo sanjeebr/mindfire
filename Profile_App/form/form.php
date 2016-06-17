@@ -220,8 +220,8 @@ if (isset($_POST['submit']) || isset($_POST['update'])) {
             } else if ($file_size > 2097152) {
                 $photo_err = 'File size must be excately 2 MB';
                 $error++;
-            } else if(0 === $error){
-                if(isset($_GET['emp_id'])) {
+            } else if (0 === $error) {
+                if (isset($_GET['emp_id'])) {
                     unlink(PROFILE_PIC . $photo);
                 }
 
