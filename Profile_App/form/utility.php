@@ -33,7 +33,7 @@ function state_list($state, $db_result_obj) {
     $is_selected = '';
 
       if ($row['name'] === $state) {
-          $is_selected = 'selected';
+        $is_selected = 'selected';
       }
 
     $state_list .= "<option value='{$row['name']}' $is_selected>{$row['name']}"
